@@ -2,6 +2,7 @@ import express from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser"
 
+const express = require('express');
 const app = express()
 
 app.use(cors({
