@@ -1,26 +1,26 @@
-import mongoose, {Schema} from "mongoose"
+import mongoose, { Schema } from "mongoose"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 
 const userSchema = new Schema({
-    username : {
-        type : String,
-        required : true,
+    username: {
+        type: String,
+        required: true,
         unique: true,
         lowercase: true,
         trim: true,
         index: true
     },
     email: {
-        type : String,
-        required : true,
+        type: String,
+        required: true,
         unique: true,
         lowercase: true,
         trim: true,
     },
     fullName: {
-        type : String,
-        required : true,
+        type: String,
+        required: true,
         trim: true,
         index: true
     },
@@ -28,38 +28,38 @@ const userSchema = new Schema({
         type: String, // cloundinary url
         required: true,
     },
-    coverImage:{
+    coverImage: {
         type: String,// cloundinary url
     },
-    watchHistory : [
+    watchHistory: [
         {
             type: Schema.Types.ObjectId,
-            ref:"Video"
+            ref: "Video"
         }
     ],
     password: {
         type: String,
-        required:[true, "Password is required"]
+        required: [true, "Password is required"]
     },
-    refreshToken:{
-        type : String
+    refreshToken: {
+        type: String
     },
 },
-{
-    timestamps: true
-})
+    {
+        timestamps: true
+    })
 
 userSchema.pre("save", async function () {
-    if(!this.isModified("password")) return;
+    if (!this.isModified("password")) return;
 
     this.password = await bcrypt.hash(this.password, 10)
 })
 
-userSchema.methods.isPasswordCorrect = async function (password){
+userSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.password)
 }
 
-userSchema.methods.generateAccessToken = function (){
+userSchema.methods.generateAccessToken = function () {
     jwt.sign(
         {
             _id: this._id,
